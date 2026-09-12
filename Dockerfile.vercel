@@ -10,7 +10,7 @@ RUN install-php-extensions \
     intl \
     pdo_mysql \
     mbstring \
-    pcntl \
+    pcntl
 
 # Install node js 20
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
@@ -26,7 +26,7 @@ COPY . .
 
 # Install PHP dependencies
 RUN composer install \
-    -- no-dev \
+    --no-dev \
     --optimize-autoloader \
     --no-interaction
 
