@@ -1,0 +1,49 @@
+FROM dunglas/frankenphp:php8.3-bookworm
+
+WORKDIR /app
+
+# install PHP extensions requiered by laravel
+RUN install-php-extensions \
+    bcmath \
+    exif \
+    gd \
+    intl \
+    pdo_mysql \
+    mbstring \
+    pcntl \
+
+# Install node js 20
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copy the application code
+COPY . .
+
+# Install PHP dependencies
+RUN composer install \
+    -- no-dev \
+    --optimize-autoloader \
+    --no-interaction
+
+# Install frontend dependencies and build vite
+RUN npm ci
+RUN npm run build
+
+# Laravel runtime directories
+RUN mkdir -p storage/framework/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/logs \
+    bootstrap/cache
+
+RUN chown -R www-data:www-data storage bootstrap/cache
+
+#FrankenPHP configuration will serve the public directory as the document root
+EXPOSE 80
+
+CMD ["sh", "-c", "frankenphp run --config /app/Caddyfile --adapter caddyfile"]
