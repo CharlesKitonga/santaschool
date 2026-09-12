@@ -27,11 +27,11 @@
 <div class="popular-course-details-area wow fadeInUp" data-wow-delay="300ms">
     <div class="single-top-popular-course d-flex align-items-center flex-wrap">
         <div class="popular-course-content">
-            <h5 style ="color: green;">{{$homes->heading}}</h5>
-            <p>{!! html_entity_decode(nl2br(e($homes->description))) !!}</p>
+            <h5 style ="color: green;">{{ $homes?->heading }}</h5>
+            <p>{!! html_entity_decode(nl2br(e($homes?->description ?? ''))) !!}</p>
             <a href="{{url('/about-us')}}" class="btn academy-btn btn-sm mt-15">See More</a>
         </div>
-        <div class="popular-course-thumb bg-img" style="background-image: url({{ asset('images/homes/'.$homes->photo) }}) ;"></div>
+        <div class="popular-course-thumb bg-img" style="background-image: url({{ asset('images/homes/'.($homes?->photo ?? 'default.png')) }}) ;"></div>
     </div>
 </div>
 <!-- ##### Top Popular Courses Details Area End ##### -->

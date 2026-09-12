@@ -9,11 +9,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta name="viewport" content="width=device-width, initial-scale=1">
    <!-- CSRF Token -->
    <meta name="csrf-token" content="{{ csrf_token() }}">
+   <script>
+     window.Laravel = @json(['user' => auth()->user()->only('id', 'name', 'type')]);
+   </script>
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
   <title>Santa Tilahm  | Admin</title>
-  <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="/css/app.css">
+  @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper" id="app">
@@ -104,12 +106,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <p>Headteacher's Details</p>
                         </router-link>
                     </li>
+                    @if (auth()->user()->isAdmin())
                     <li class="nav-item">
                         <router-link to="/users" class="nav-link ">
                             <i class="fas fa-users nav-icon text-cyan"></i>
                             <p>Users</p>
                         </router-link>
                     </li>
+                    @endif
                 </ul>
             </li>
             <li class="nav-item has-treeview ">
@@ -201,7 +205,5 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </div>
 <!-- ./wrapper -->
 
-<!-- REQUIRED SCRIPTS -->
-<script src="/js/app.js"></script>
 </body>
 </html>

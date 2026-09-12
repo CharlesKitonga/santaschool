@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Image;
 class UserController extends Controller
@@ -18,6 +18,10 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
+
+        // Managing other users' accounts is admin-only. Every signed-in
+        // user may still read/update their own profile.
+        $this->middleware('admin')->only(['index', 'store', 'show', 'update', 'destroy']);
     }
     /**
      * Display a listing of the resource.

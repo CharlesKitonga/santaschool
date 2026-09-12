@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Philosophy;
+use App\Models\Philosophy;
 
 class PhilosophyController extends Controller
 {

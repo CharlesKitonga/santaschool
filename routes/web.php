@@ -1,15 +1,8 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PagesController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/admin', function () {
     return view('welcome');
@@ -17,19 +10,18 @@ Route::get('/admin', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-//front page routes
-Route::get('/', 'PagesController@Index');
-Route::get('/about-us', 'PagesController@About');
-Route::get('/leader', 'PagesController@Leader');
-Route::get('/gallery', 'PagesController@Gallery');
-Route::get('/teachers', 'PagesController@Teachers');
-Route::get('/admissions', 'PagesController@Admissions');
-Route::get('/gallery', 'PagesController@Gallery');
-Route::match(['get','post'], '/contact','PagesController@Contact');
-//admin logout route
-Route::get('/admin-logout', 'PagesController@logout');
+// Front page routes
+Route::get('/', [PagesController::class, 'Index']);
+Route::get('/about-us', [PagesController::class, 'About']);
+Route::get('/gallery', [PagesController::class, 'Gallery']);
+Route::get('/teachers', [PagesController::class, 'Teachers']);
+Route::get('/admissions', [PagesController::class, 'Admissions']);
+Route::match(['get', 'post'], '/contact', [PagesController::class, 'Contact']);
 
-//rendering vue routes to the web
-Route::get('{path}', 'HomeController@index')->where('path', '.*');
+// Admin logout route
+Route::get('/admin-logout', [PagesController::class, 'logout']);
+
+// Hand remaining paths to the Vue SPA
+Route::get('{path}', [HomeController::class, 'index'])->where('path', '.*');

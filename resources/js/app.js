@@ -1,118 +1,162 @@
 /**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
+ * Admin SPA entrypoint (Vue 3 + Vue Router 4 + Vite).
  */
 
-require('./bootstrap');
+import './bootstrap';
 
-window.Vue = require('vue');
+import { createApp, h } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
+import mitt from 'mitt';
+import moment from 'moment';
 
 import Swal from 'sweetalert2';
+import VueProgressBar from '@aacassandra/vue3-progressbar';
+import { Form } from 'vform';
+
+/**
+ * vform 2 dropped its Vue components, so re-create the two the app uses.
+ */
+const HasError = {
+    name: 'HasError',
+    props: {
+        form: { type: Object, required: true },
+        field: { type: String, required: true },
+    },
+    render() {
+        if (!this.form.errors.has(this.field)) return null;
+        return h(
+            'span',
+            { class: 'invalid-feedback d-block', role: 'alert' },
+            [h('strong', this.form.errors.get(this.field))]
+        );
+    },
+};
+
+const AlertError = {
+    name: 'AlertError',
+    props: {
+        form: { type: Object, required: true },
+        message: { type: String, default: 'There were some problems with your input.' },
+    },
+    render() {
+        if (!this.form.errors.any()) return null;
+        return h('div', { class: 'alert alert-danger', role: 'alert' }, this.message);
+    },
+};
+
+import Dashboard from './components/Dashboard.vue';
+import Developer from './components/Developer.vue';
+import Profile from './components/Profile.vue';
+import Users from './components/Users.vue';
+import Home from './components/Home.vue';
+import Slider from './components/Slider.vue';
+import About from './components/About.vue';
+import Philosophy from './components/Philosophy.vue';
+import Team from './components/Team.vue';
+import TeamLeader from './components/TeamLeader.vue';
+import Gallery from './components/Gallery.vue';
+
+import PassportClients from './components/passport/Clients.vue';
+import PassportAuthorizedClients from './components/passport/AuthorizedClients.vue';
+import PassportPersonalAccessTokens from './components/passport/PersonalAccessTokens.vue';
+import ExampleComponent from './components/ExampleComponent.vue';
+
+/**
+ * Global toast helper (kept on window for parity with the old code).
+ */
 window.Swal = Swal;
-const Toast = Swal.mixin({
+window.Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    onOpen: (toast) => {
-      toast.addEventListener('mouseenter', Swal.stopTimer)
-      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+});
+
+/**
+ * Vue 3 removed instance events, so back the old `Fire.$on/$emit` bus
+ * with mitt and expose the same method names.
+ */
+const emitter = mitt();
+window.Fire = {
+    $on: emitter.on,
+    $off: emitter.off,
+    $emit: emitter.emit,
+};
+
+window.Form = Form;
+
+const routes = [
+    { path: '/dashboard', component: Dashboard },
+    { path: '/developer', component: Developer },
+    { path: '/profile', component: Profile },
+    { path: '/users', component: Users, meta: { role: 'admin' } },
+    { path: '/school-home', component: Home },
+    { path: '/sliders', component: Slider },
+    { path: '/admin-about', component: About },
+    { path: '/admin-philosophy', component: Philosophy },
+    { path: '/admin-team', component: Team },
+    { path: '/admin-teamleader', component: TeamLeader },
+    { path: '/admin-gallery', component: Gallery },
+];
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes,
+    linkExactActiveClass: 'router-link-exact-active',
+});
+
+/**
+ * Client-side gate. The real enforcement is the `admin` middleware on
+ * the API; this just keeps non-admins from opening the Users screen.
+ */
+const currentRole = window.Laravel?.user?.type ?? null;
+router.beforeEach((to) => {
+    if (to.meta.role === 'admin' && currentRole !== 'admin') {
+        return { path: '/dashboard' };
     }
-  })
-  window.Toast = Toast;
-import VueProgressBar from 'vue-progressbar';
-const options = {
+    return true;
+});
+
+/**
+ * No root render/template on purpose: Vue compiles the existing markup
+ * inside #app as its template (like Vue 2's `new Vue({ el: '#app' })`).
+ * That keeps server-rendered pages such as /login intact while still
+ * driving <router-view> on the admin shell.
+ */
+const app = createApp({});
+
+app.use(router);
+app.use(VueProgressBar, {
     color: '#228B22',
     failedColor: '#FF0000',
     thickness: '5px',
-    transition: {
-      speed: '0.12s',
-      opacity: '0.6s',
-      termination: 300
-    },
+    transition: { speed: '0.12s', opacity: '0.6s', termination: 300 },
     autoRevert: true,
     location: 'top',
-    inverse: false
-  }
-Vue.use(VueProgressBar, options)
-import moment from 'moment';//for displaying date and time nicely
-import { Form, HasError, AlertError } from 'vform';
-
-window.Form = Form;
-Vue.component(HasError.name, HasError)
-Vue.component(AlertError.name, AlertError)
-
-import VueRouter from 'vue-router'
-Vue.use(VueRouter)
-
-//vue routes
-let routes = [
-    { path: '/dashboard', component: require('./components/Dashboard.vue').default },
-    { path: '/developer', component: require('./components/Developer.vue').default },
-    { path: '/profile', component: require('./components/Profile.vue').default },
-    { path: '/users', component: require('./components/Users.vue').default },
-    { path: '/school-home', component: require('./components/Home.vue').default },
-    { path: '/sliders', component: require('./components/Slider.vue').default },
-    { path: '/admin-about', component: require('./components/About.vue').default },
-    { path: '/admin-philosophy', component: require('./components/Philosophy.vue').default },
-    { path: '/admin-team', component: require('./components/Team.vue').default },
-    { path: '/admin-teamleader', component: require('./components/TeamLeader.vue').default },
-    { path: '/admin-gallery', component: require('./components/Gallery.vue').default }
-
-
-]
-
-const router = new VueRouter({
-    mode: 'history',
-    routes // short for `routes: routes`
-  })
-
-Vue.filter('upText', function(text){
-    return text.charAt(0).toUpperCase() + text.slice(1)
-});
-Vue.filter('myDate', function(created){
-    return moment(created).format('MMMM Do YYYY'); // December 10th 2019
+    inverse: false,
 });
 
-window.Fire =  new Vue();
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-Vue.component(
-    'passport-clients',
-    require('./components/passport/Clients.vue').default
-);
-
-Vue.component(
-    'passport-authorized-clients',
-    require('./components/passport/AuthorizedClients.vue').default
-);
-
-Vue.component(
-    'passport-personal-access-tokens',
-    require('./components/passport/PersonalAccessTokens.vue').default
-);
-
-
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+app.component(HasError.name, HasError);
+app.component(AlertError.name, AlertError);
+app.component('passport-clients', PassportClients);
+app.component('passport-authorized-clients', PassportAuthorizedClients);
+app.component('passport-personal-access-tokens', PassportPersonalAccessTokens);
+app.component('example-component', ExampleComponent);
 
 /**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
+ * The Vue 2 `upText` / `myDate` filters are now global helpers; call them
+ * as methods in templates instead of `{{ value | upText }}`.
  */
+app.config.globalProperties.upText = (text) =>
+    text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+app.config.globalProperties.myDate = (created) =>
+    created ? moment(created).format('MMMM Do YYYY') : '';
 
-const app = new Vue({
-    el: '#app',
-    router
-});
+if (document.getElementById('app')) {
+    app.mount('#app');
+}

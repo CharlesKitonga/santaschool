@@ -92,7 +92,7 @@
 
 <script>
 // Basic Use - Covers most scenarios
-import { VueEditor } from "vue2-editor";
+import { VueEditor } from "vue3-editor";
     export default {
         data(){
             return{

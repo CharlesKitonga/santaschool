@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Mail\ContactMe;
 use Illuminate\Support\Facades\Mail;
-use App\Contact;
-use Mapper;
+use App\Models\Contact;
 
 class ContactController extends Controller
 {
@@ -18,8 +17,6 @@ class ContactController extends Controller
      */
     public function index()
     {
-        Mapper::map(-1.372260, 38.010472);
-        //Mapper::informationWindow(-1.372260, 38.010472, 'SantaTilahm School', ['open' => true, 'maxWidth'=> 300, 'autoClose' => true, 'markers' => ['title' => 'SantaTilahm School']]);
 
         return view('frontpages.contact');
     }
@@ -42,7 +39,6 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        Mapper::map(-1.372260, 38.010472);
 
        //validate the request & send the email
         $contacts = new Contact($this->validateContact());

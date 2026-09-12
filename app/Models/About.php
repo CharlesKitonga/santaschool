@@ -1,11 +1,14 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Philosophy extends Model
+class About extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'heading', 'description', 'photo',
     ];

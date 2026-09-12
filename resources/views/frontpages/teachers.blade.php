@@ -4,10 +4,10 @@
 <div class="popular-course-details-area wow fadeInUp mt-5" data-wow-delay="300ms">
     <div class="single-top-popular-course d-flex align-items-center flex-wrap">
         <div class="popular-course-content">
-            <h5>{{$headteacher->name}}</h5>
-            <p>{!! html_entity_decode(nl2br(e($headteacher->description))) !!}</p>
+            <h5>{{ $headteacher?->name }}</h5>
+            <p>{!! html_entity_decode(nl2br(e($headteacher?->description ?? ""))) !!}</p>
         </div>
-        <div class="popular-course-thumb bg-img"style="background-image: url({{ asset('images/teams/'.$headteacher->photo) }}) ;"></div>
+        <div class="popular-course-thumb bg-img"style="background-image: url({{ asset('images/teams/'.($headteacher?->photo ?? "default.png")) }}) ;"></div>
     </div>
 </div>
 <!-- ##### Top Popular Courses Details Area End ##### -->
