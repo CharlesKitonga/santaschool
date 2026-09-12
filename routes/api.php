@@ -1,36 +1,32 @@
 <?php
 
+use App\Http\Controllers\API\AboutController;
+use App\Http\Controllers\API\GalleryController;
+use App\Http\Controllers\API\HomeController;
+use App\Http\Controllers\API\PartnerController;
+use App\Http\Controllers\API\PhilosophyController;
+use App\Http\Controllers\API\SliderController;
+use App\Http\Controllers\API\TeamController;
+use App\Http\Controllers\API\TeamLeaderController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::apiResources([
-    'user' => 'API\UserController',
-    'homes' =>'API\HomeController',
-    'sliders' => 'API\SliderController',
-    'services' => 'API\ServicesController',
-    'abouts' => 'API\AboutController',
-    'philosophy' => 'API\PhilosophyController',
-    'teams' => 'API\TeamController',
-    'teamleader' => 'API\TeamLeaderController',
-    'galleries' => 'API\GalleryController',
-    'partners' => 'API\PartnerController',
-    'clients' => 'API\ClientsController',
-    'topics' => 'API\TopicController'
-
+    'user' => UserController::class,
+    'homes' => HomeController::class,
+    'sliders' => SliderController::class,
+    'abouts' => AboutController::class,
+    'philosophy' => PhilosophyController::class,
+    'teams' => TeamController::class,
+    'teamleader' => TeamLeaderController::class,
+    'galleries' => GalleryController::class,
+    'partners' => PartnerController::class,
 ]);
-Route::get('profile', 'API\UserController@profile');
-Route::put('profile','API\UserController@updateProfile');
+
+Route::get('profile', [UserController::class, 'profile']);
+Route::put('profile', [UserController::class, 'updateProfile']);

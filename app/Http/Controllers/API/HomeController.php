@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Home;
+use App\Models\Home;
 use Image;
 
 class HomeController extends Controller

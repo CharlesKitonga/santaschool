@@ -30,8 +30,8 @@
                                 <td>{{user.id}}</td>
                                 <td>{{user.name }}</td>
                                 <td>{{user.email}}</td>
-                                <td>{{user.type | upText}}</td>
-                                <td>{{user.created_at  | myDate}}</td>
+                                <td>{{ upText(user.type) }}</td>
+                                <td>{{ myDate(user.created_at) }}</td>
                                 <td>
                                     <a @click="editModal(user)">
                                         <i class="fa fa-edit text-blue"></i>

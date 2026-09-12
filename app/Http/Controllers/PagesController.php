@@ -3,15 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\About;
-use App\Contact;
-use App\Gallery;
-use App\Home;
-use Mapper;
-use App\Philosophy;
-use App\Slider;
-use App\TeamLeader;
-use App\Team;
+use App\Models\About;
+use App\Models\Contact;
+use App\Models\Gallery;
+use App\Models\Home;
+use App\Models\Philosophy;
+use App\Models\Slider;
+use App\Models\TeamLeader;
+use App\Models\Team;
 class PagesController extends Controller
 {
     public function Index(){
@@ -53,8 +52,6 @@ class PagesController extends Controller
     	return view('frontpages.news-single');
     }
         public function Contact(Request $request){
-            Mapper::map(-1.372260, 38.010472);
-
             if ($request->isMethod('post')) {
                 $data = $request->all();
                 //echo("<pre>");print_r($data);die;
@@ -68,5 +65,13 @@ class PagesController extends Controller
 
             }
         return view('frontpages.contact')->with('success','Thank You for Your Message we will get in touch..');
+    }
+
+    public function logout(Request $request){
+        auth()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
     }
 }

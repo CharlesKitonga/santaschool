@@ -10,8 +10,12 @@
     <!-- ##### Breadcumb Area End ##### -->
 
     <!-- ##### Google Maps ##### -->
-   <div style="width: 100%; height: 500px;">
-        {!! Mapper::render() !!}
+    <div style="width: 100%; height: 500px;">
+        <iframe
+            src="https://maps.google.com/maps?q=-1.372260,38.010472&z=15&output=embed"
+            width="100%" height="100%" style="border:0;"
+            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
     </div>
 
     <!-- ##### Contact Area Start ##### -->
