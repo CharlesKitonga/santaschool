@@ -43,6 +43,7 @@ RUN mkdir -p storage/framework/cache \
 
 RUN chown -R www-data:www-data storage bootstrap/cache
 
+
 #FrankenPHP configuration will serve the public directory as the document root
 EXPOSE 80
 
