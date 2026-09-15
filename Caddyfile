@@ -2,7 +2,7 @@
     auto_https off
 }
 
-:${PORT} {
+:{$PORT} {
     root * /app/public
 
     php_server
