@@ -1,13 +1,13 @@
 {
-    auto_https off
+	auto_https off
 }
 
 :{$PORT} {
-    root * /app/public
+	root * /app/public
 
-    php_server
+	php_server
 
-    encode gzip
+	encode gzip
 
-    file_server
+	file_server
 }
